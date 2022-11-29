@@ -12,7 +12,7 @@ void main() async {
       systemNavigationBarColor: AppColors.bgColor, // navigation bar color
       statusBarColor: Colors.transparent, // status bar color
       statusBarBrightness: Brightness.dark, //status bar brigtness
-      statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
+      statusBarIconBrightness: Brightness.light, //status barIcon Brightness
       systemNavigationBarDividerColor:
           Colors.transparent, //Navigation bar divider
     ),

@@ -1,12 +1,19 @@
 import '../../../../utils/export_pack.dart';
 
 class LoginButtonWidget extends StatelessWidget {
-  const LoginButtonWidget({super.key});
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  const LoginButtonWidget({
+    super.key,
+    required this.onTap,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: isLoading ? null : onTap,
       child: Container(
         width: 160.w,
         height: 38.h,
@@ -29,14 +36,24 @@ class LoginButtonWidget extends StatelessWidget {
             color: AppColors.bgColor.withOpacity(1),
           ),
           child: Center(
-            child: Text(
-              'Sign up',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.white,
-              ),
-            ),
+            child: isLoading
+                ? SizedBox(
+                    width: 10.w,
+                    height: 10.h,
+                    child: const CircularProgressIndicator(
+                      color: AppColors.noenPrimaryColor,
+                      backgroundColor: AppColors.pinkColor,
+                      strokeWidth: 3,
+                    ),
+                  )
+                : Text(
+                    'Sign in',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),

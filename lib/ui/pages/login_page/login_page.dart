@@ -1,135 +1,76 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'dart:ui';
+import 'package:movie_app/ui/pages/intro_page/intro_widgets/intro_button_widget.dart';
+import 'package:movie_app/ui/routes/main_navigation.dart';
+import 'package:movie_app/ui/widgets/custom_text_field.dart';
+import 'package:movie_app/utils/export_pack.dart';
 
-import '../../../utils/export_pack.dart';
-import 'login_widgets/login_avatar_widget.dart';
-import 'login_widgets/login_button_widget.dart';
-import 'login_widgets/login_info_widget.dart';
-
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _avatarController;
-  late Animation<double> _opacity;
-
-  @override
-  void initState() {
-    _avatarController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _opacity = Tween<double>(begin: 0.0, end: 1).animate(
-      CurvedAnimation(parent: _avatarController, curve: Curves.easeInOut),
-    );
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _avatarController.forward();
     final _screenHeight = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SizedBox(
-        height: _screenHeight,
-        width: _screenWidth,
-        child: Stack(
-          children: [
-            _BackFilterWidget(
-              top: 80.h,
-              left: 16.w,
-              color: AppColors.pinkColor,
+    final titleStyle = TextStyle(
+      fontSize: 17.sp,
+      color: Colors.white.withOpacity(0.7),
+      fontWeight: FontWeight.w400,
+    );
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Container(
+          height: _screenHeight,
+          width: _screenWidth,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg.png'),
+              fit: BoxFit.cover,
             ),
-            _BackFilterWidget(
-              top: 264.h,
-              left: 300.w,
-              color: AppColors.noenPrimaryColor,
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 63.h),
-                    AnimatedBuilder(
-                      animation: _avatarController,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: _opacity.value,
-                          child: const LoginAvatarWidget(),
-                        );
-                      },
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 30.h),
+                  Text('Username', style: titleStyle),
+                  SizedBox(height: 10.h),
+                  const CustomTextField(
+                    hintText: 'Enter username',
+                  ),
+                  SizedBox(height: 25.h),
+                  Text('Password', style: titleStyle),
+                  SizedBox(height: 10.h),
+                  const CustomTextField(
+                    hintText: 'Enter password',
+                  ),
+                  SizedBox(height: 50.h),
+                  Center(
+                    child: LoginButtonWidget(
+                      onTap: () => _navigateToNavPage(context),
+                      // isLoading: true,
                     ),
-                    const LoginInfoWidget(),
-                    AnimatedBuilder(
-                      animation: _avatarController,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: _opacity.value,
-                          child: const LoginButtonWidget(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BackFilterWidget extends StatelessWidget {
-  final double? top;
-  final double? left;
-  final double? right;
-  final double? bottom;
-  final Color color;
-
-  const _BackFilterWidget({
-    Key? key,
-    this.top,
-    // ignore: unused_element
-    this.left,
-    // ignore: unused_element
-    this.right,
-    // ignore: unused_element
-    this.bottom,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: top,
-      left: left,
-      bottom: bottom,
-      right: right,
-      child: Container(
-        width: 165.w,
-        height: 165.h,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 200, sigmaY: 200),
-          child: Container(
-            width: 165.w,
-            height: 165.h,
-            color: Colors.transparent,
           ),
         ),
       ),
     );
   }
+}
+
+_navigateToNavPage(BuildContext context) {
+  Navigator.pushReplacementNamed(
+    context,
+    MainNavigationRouteNames.nav,
+  );
 }
