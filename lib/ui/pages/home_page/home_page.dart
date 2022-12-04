@@ -1,4 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/playing_movies_bloc/playing_movies_bloc.dart';
 import 'package:movie_app/ui/pages/home_page/home_widgets/movie_list_widget.dart';
 
 import '../../../utils/export_pack.dart';
@@ -21,24 +23,40 @@ class HomePage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 55.h),
-                _buildMainTitle(),
-                SizedBox(height: 35.h),
-                _buildTitle('New movies'),
-                SizedBox(height: 18.h),
-                const MoiveListWidget(),
-                SizedBox(height: 23.h),
-                _buildTitle('Upcoming movies'),
-                SizedBox(height: 18.h),
-                const MoiveListWidget(),
-              ],
-            ),
-          ),
+        child: BlocConsumer<PlayingMoviesBloc, PlayingMoviesState>(
+          listener: (context, state) {
+            // TODO: implement listener
+          },
+          builder: (context, state) {
+            if (state is PlayingMoviesLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.noenPrimaryColor,
+                  backgroundColor: AppColors.pinkColor,
+                  strokeWidth: 3,
+                ),
+              );
+            }
+            return SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 55.h),
+                    _buildMainTitle(),
+                    SizedBox(height: 35.h),
+                    _buildTitle('New movies'),
+                    SizedBox(height: 18.h),
+                    const MoiveListWidget(),
+                    SizedBox(height: 23.h),
+                    _buildTitle('Upcoming movies'),
+                    SizedBox(height: 18.h),
+                    const MoiveListWidget(),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

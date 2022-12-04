@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:movie_app/data/models/my_app_model.dart';
 import 'package:movie_app/ui/routes/main_navigation.dart';
 import 'package:movie_app/ui/theme/app_theme.dart';
 import 'package:movie_app/utils/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final model = MyAppModel();
+  await model.checkAuth();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       systemNavigationBarColor: AppColors.bgColor, // navigation bar color
@@ -17,12 +20,13 @@ void main() async {
           Colors.transparent, //Navigation bar divider
     ),
   );
-
-  runApp(const MyApp());
+  final app = MyApp(model: model);
+  runApp(app);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final MyAppModel model;
+  const MyApp({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +39,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: true,
           theme: AppTheme.theme,
           routes: MainNavigation.routes,
-          initialRoute: MainNavigation.initialRoute,
+          initialRoute: MainNavigation.initialRoute(model.isAuth),
           title: 'Movie App',
         );
       },

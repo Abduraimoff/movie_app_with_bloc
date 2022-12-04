@@ -1,40 +1,34 @@
-import 'dart:convert';
-
 import 'package:movie_app/data/models/movie.dart';
 
 class NowPlayingMovies {
-  final int page;
-  final List<Movie> movies;
-  final int totalPages;
-  final int totalResults;
+  int? page;
+  List<Movie>? results;
+  int? totalPages;
+  int? totalResults;
 
-  NowPlayingMovies({
-    required this.page,
-    required this.movies,
-    required this.totalPages,
-    required this.totalResults,
-  });
+  NowPlayingMovies(
+      {this.page, this.results, this.totalPages, this.totalResults});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'page': page,
-      'results': movies.map((x) => x.toMap()).toList(),
-      'total_pages': totalPages,
-      'total_results': totalResults,
-    };
+  NowPlayingMovies.fromJson(Map<String, dynamic> json) {
+    page = json['page'];
+    if (json['results'] != null) {
+      results = <Movie>[];
+      json['results'].forEach((v) {
+        results!.add(Movie.fromJson(v));
+      });
+    }
+    totalPages = json['total_pages'];
+    totalResults = json['total_results'];
   }
 
-  factory NowPlayingMovies.fromMap(Map<String, dynamic> map) {
-    return NowPlayingMovies(
-      page: map['page']?.toInt() ?? 0,
-      movies: List<Movie>.from(map['results']?.map((x) => Movie.fromMap(x))),
-      totalPages: map['total_pages']?.toInt() ?? 0,
-      totalResults: map['total_results']?.toInt() ?? 0,
-    );
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['page'] = page;
+    if (results != null) {
+      data['results'] = results!.map((v) => v.toJson()).toList();
+    }
+    data['total_pages'] = totalPages;
+    data['total_results'] = totalResults;
+    return data;
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory NowPlayingMovies.fromJson(String source) =>
-      NowPlayingMovies.fromMap(json.decode(source));
 }

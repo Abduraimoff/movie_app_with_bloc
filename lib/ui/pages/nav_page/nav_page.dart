@@ -2,6 +2,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/navigation_cubit/navigation_cubit.dart';
+import 'package:movie_app/data/data_provider/session_data_provider.dart';
 import 'package:movie_app/ui/widgets/bottom_icons_list.dart';
 import 'package:movie_app/utils/export_pack.dart';
 
@@ -73,8 +74,12 @@ class CustomFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sessionData = SessionDataProvider();
+
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        sessionData.deleteSessionId();
+      },
       child: Container(
         width: 60.w,
         height: 60.h,

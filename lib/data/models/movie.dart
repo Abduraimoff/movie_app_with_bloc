@@ -1,69 +1,68 @@
-import 'dart:convert';
-
 class Movie {
-  final String backdropPath;
-  final int id;
-  final String originalLanguage;
-  final String originalTitle;
-  final String overview;
-  final double popularity;
-  final String posterPath;
-  final String releaseDate;
-  final String title;
-  final bool video;
-  final int voteCount;
-  final String voteAverage;
+  String? posterPath;
+  bool? adult;
+  String? overview;
+  String? releaseDate;
+  List<int>? genreIds;
+  int? id;
+  String? originalTitle;
+  String? originalLanguage;
+  String? title;
+  String? backdropPath;
+  double? popularity;
+  int? voteCount;
+  bool? video;
+  double? voteAverage;
 
-  Movie({
-    required this.backdropPath,
-    required this.id,
-    required this.originalLanguage,
-    required this.originalTitle,
-    required this.overview,
-    required this.popularity,
-    required this.posterPath,
-    required this.releaseDate,
-    required this.title,
-    required this.video,
-    required this.voteCount,
-    required this.voteAverage,
-  });
+  Movie(
+      {this.posterPath,
+      this.adult,
+      this.overview,
+      this.releaseDate,
+      this.genreIds,
+      this.id,
+      this.originalTitle,
+      this.originalLanguage,
+      this.title,
+      this.backdropPath,
+      this.popularity,
+      this.voteCount,
+      this.video,
+      this.voteAverage});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'backdropPath': backdropPath,
-      'id': id,
-      'originalLanguage': originalLanguage,
-      'originalTitle': originalTitle,
-      'overview': overview,
-      'popularity': popularity,
-      'posterPath': posterPath,
-      'releaseDate': releaseDate,
-      'title': title,
-      'video': video,
-      'voteCount': voteCount,
-      'voteAverage': voteAverage,
-    };
+  Movie.fromJson(Map<String, dynamic> json) {
+    posterPath = json['poster_path'];
+    adult = json['adult'];
+    overview = json['overview'];
+    releaseDate = json['release_date'];
+    genreIds = json['genre_ids'].cast<int>();
+    id = json['id'];
+    originalTitle = json['original_title'];
+    originalLanguage = json['original_language'];
+    title = json['title'];
+    backdropPath = json['backdrop_path'];
+    popularity = json['popularity'];
+    voteCount = json['vote_count'];
+    video = json['video'];
+    voteAverage = json['vote_average'];
   }
 
-  factory Movie.fromMap(Map<String, dynamic> json) {
-    return Movie(
-      backdropPath: json['backdrop_path'] ?? '',
-      id: json['id']?.toInt() ?? 0,
-      originalLanguage: json['original_language'] ?? '',
-      originalTitle: json['original_title'] ?? '',
-      overview: json['overview'] ?? '',
-      popularity: json['popularity']?.toDouble() ?? 0.0,
-      posterPath: json['poster_path'] ?? '',
-      releaseDate: json['release_date'] ?? '',
-      title: json['title'] ?? '',
-      video: json['video'] ?? false,
-      voteCount: json['vote_count']?.toInt() ?? 0,
-      voteAverage: json['vote_average'].toString(),
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['poster_path'] = posterPath;
+    data['adult'] = adult;
+    data['overview'] = overview;
+    data['release_date'] = releaseDate;
+    data['genre_ids'] = genreIds;
+    data['id'] = id;
+    data['original_title'] = originalTitle;
+    data['original_language'] = originalLanguage;
+    data['title'] = title;
+    data['backdrop_path'] = backdropPath;
+    data['popularity'] = popularity;
+    data['vote_count'] = voteCount;
+    data['video'] = video;
+    data['vote_average'] = voteAverage;
+    return data;
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Movie.fromJson(String source) => Movie.fromMap(json.decode(source));
 }
