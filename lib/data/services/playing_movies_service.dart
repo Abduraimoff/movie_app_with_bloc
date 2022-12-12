@@ -16,11 +16,12 @@ class PlayinMoviesService {
 
     try {
       final response = await _dio.get(_url);
-      log(response.data);
-      final result = NowPlayingMovies.fromJson(response.data);
+      log(response.data.toString());
+      
+      final moives = NowPlayingMovies.fromMap(response.data);
 
-      return result;
-    } catch (e) {
+      return moives;
+    } on DioError catch (e) {
       rethrow;
     }
   }

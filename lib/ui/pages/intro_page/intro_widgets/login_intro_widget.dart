@@ -26,6 +26,6 @@ class LoginIntroPage extends StatelessWidget {
 _navigateToLogin(BuildContext context) {
   Navigator.pushReplacementNamed(
     context,
-    MainNavigationRouteNames.login,
+    RouteNames.login,
   );
 }

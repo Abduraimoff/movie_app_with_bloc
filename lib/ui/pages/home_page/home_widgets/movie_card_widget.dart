@@ -1,10 +1,13 @@
+import 'package:movie_app/data/models/movie.dart';
 import 'package:movie_app/ui/routes/main_navigation.dart';
+import 'package:movie_app/utils/config.dart';
 import 'package:movie_app/utils/export_pack.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class MovieCardWidget extends StatelessWidget {
-  final String? imageUrl;
+  final Movie movie;
 
-  const MovieCardWidget({super.key, this.imageUrl});
+  const MovieCardWidget({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +23,18 @@ class MovieCardWidget extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
+          SizedBox(
             width: 147.w,
             height: 160.h,
-            padding: EdgeInsets.zero,
-            decoration: BoxDecoration(
-              color: Colors.lightGreen[300],
+            child: ClipRRect(
               borderRadius: borderRadius,
-              image: const DecorationImage(
-                image: NetworkImage(
-                  'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pFlaoHTZeyNkG83vxsAJiGzfSsa.jpg',
-                ),
+              child: FadeInImage.memoryNetwork(
+                fadeInDuration: const Duration(milliseconds: 200),
+                placeholder: kTransparentImage,
+                imageErrorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                image: '${Config.imageUrl}/${movie.backdropPath}',
                 fit: BoxFit.cover,
+                
               ),
             ),
           ),
@@ -45,7 +48,10 @@ class MovieCardWidget extends StatelessWidget {
               child: InkWell(
                 borderRadius: borderRadius,
                 onTap: () {
-                  Navigator.pushNamed(context, MainNavigationRouteNames.detail);
+                  Navigator.of(context).pushNamed(
+                    RouteNames.detail,
+                    arguments: movie,
+                  );
                 },
                 child: Ink(),
               ),

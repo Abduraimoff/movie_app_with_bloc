@@ -44,6 +44,4 @@ class Cast {
       order: map['order']?.toInt() ?? 0,
     );
   }
-
-  factory Cast.fromJson(String source) => Cast.fromMap(json.decode(source));
 }

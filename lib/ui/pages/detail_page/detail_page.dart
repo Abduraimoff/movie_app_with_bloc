@@ -1,3 +1,11 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/casts_bloc/casts_bloc.dart';
+import 'package:movie_app/data/models/movie.dart';
+import 'package:movie_app/utils/config.dart';
+import 'package:transparent_image/transparent_image.dart';
+
 import '../../../utils/export_pack.dart';
 import 'detail_widgets/back_button_widget.dart';
 import 'detail_widgets/cast_list_widget.dart';
@@ -5,59 +13,91 @@ import 'detail_widgets/pay_button_widget.dart';
 import 'detail_widgets/rating_widget.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+  final Movie movie;
+
+  const DetailPage({
+    super.key,
+    required this.movie,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final id = movie.id;
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: 450.h,
-                  width: double.infinity,
-                  child: Image.network(
-                    'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pFlaoHTZeyNkG83vxsAJiGzfSsa.jpg',
-                    fit: BoxFit.cover,
+      body: BlocProvider(
+        create: (context) => CastsBloc()..add(CastsLoadEvent(id)),
+        child: _Body(movie: movie),
+      ),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body({
+    Key? key,
+    required this.movie,
+  }) : super(key: key);
+
+  final Movie movie;
+
+  @override
+  Widget build(BuildContext context) {
+    final String _imageUrl = '${Config.imageUrl}/${movie.posterPath}';
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              SizedBox(
+                height: 450.h,
+                width: double.infinity,
+                child: FadeInImage.memoryNetwork(
+                  fadeInDuration: const Duration(milliseconds: 200),
+                  imageErrorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
+                  placeholder: kTransparentImage,
+                  image: _imageUrl,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              const BackButtonWidget(),
+              const PlayButtonWidget(),
+            ],
+          ),
+          Center(
+            child: SizedBox(
+              width: 285.w,
+              child: Column(
+                children: [
+                  _TitleWidget(title: movie.title),
+                  _SubtitleWidget(
+                    date: movie.releaseDate,
+                    lan: movie.originalLanguage,
                   ),
-                ),
-                const BackButtonWidget(),
-                const PlayButtonWidget(),
-              ],
-            ),
-            Center(
-              child: SizedBox(
-                width: 285.w,
-                child: Column(
-                  children: const [
-                    _TitleWidget(),
-                    _SubtitleWidget(),
-                    RatingWidget(),
-                    _DescriptionWidget(),
-                  ],
-                ),
+                  RatingWidget(votes: double.parse(movie.voteAverage)),
+                  _DescriptionWidget(movie.overview),
+                ],
               ),
             ),
-            const _DividerWidget(),
-            Padding(
-              padding: EdgeInsets.only(left: 21.w, top: 12.h),
-              child: Text(
-                'Casts',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 17.sp,
-                  color: Colors.white,
-                  height: 23.15 / 17.sp,
-                ),
+          ),
+          const _DividerWidget(),
+          Padding(
+            padding: EdgeInsets.only(left: 21.w, top: 12.h),
+            child: Text(
+              'Casts',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 17.sp,
+                color: Colors.white,
+                height: 23.15 / 17.sp,
               ),
             ),
-            const CastListWidget(),
-          ],
-        ),
+          ),
+          const CastListWidget(),
+        ],
       ),
     );
   }
@@ -81,7 +121,9 @@ class _DividerWidget extends StatelessWidget {
 }
 
 class _DescriptionWidget extends StatelessWidget {
-  const _DescriptionWidget();
+  final String text;
+
+  const _DescriptionWidget(this.text);
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +131,7 @@ class _DescriptionWidget extends StatelessWidget {
       children: [
         SizedBox(height: 16.h),
         Text(
-          'Nearly 5,000 years after he was bestowed with the almighty powers of the Egyptian gods—and imprisoned just as quickly—Black Adam is freed from his earthly tomb, ready to unleash his unique form of justice on the modern world.',
+          text,
           maxLines: 5,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -107,8 +149,10 @@ class _DescriptionWidget extends StatelessWidget {
 }
 
 class _TitleWidget extends StatelessWidget {
+  final String title;
   const _TitleWidget({
     Key? key,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -117,7 +161,7 @@ class _TitleWidget extends StatelessWidget {
       children: [
         SizedBox(height: 16.h),
         Text(
-          'Black Adam (2022)',
+          title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
@@ -134,8 +178,13 @@ class _TitleWidget extends StatelessWidget {
 }
 
 class _SubtitleWidget extends StatelessWidget {
+  final String date;
+  final String lan;
+
   const _SubtitleWidget({
     Key? key,
+    required this.date,
+    required this.lan,
   }) : super(key: key);
 
   @override
@@ -143,7 +192,7 @@ class _SubtitleWidget extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '2021    Action-Adventure-Fantasy    2h36m',
+          '$date  ($lan)',
           style: TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 13.sp,

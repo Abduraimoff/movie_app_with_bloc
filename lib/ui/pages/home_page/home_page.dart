@@ -12,6 +12,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _screenHeight = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
+    final bloc = context.watch<PlayingMoviesBloc>();
+    final state = bloc.state;
     return Scaffold(
       extendBody: true,
       body: Container(
@@ -23,40 +25,26 @@ class HomePage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: BlocConsumer<PlayingMoviesBloc, PlayingMoviesState>(
-          listener: (context, state) {
-            // TODO: implement listener
-          },
-          builder: (context, state) {
-            if (state is PlayingMoviesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.noenPrimaryColor,
-                  backgroundColor: AppColors.pinkColor,
-                  strokeWidth: 3,
-                ),
-              );
-            }
-            return SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 55.h),
-                    _buildMainTitle(),
-                    SizedBox(height: 35.h),
-                    _buildTitle('New movies'),
-                    SizedBox(height: 18.h),
-                    const MoiveListWidget(),
-                    SizedBox(height: 23.h),
-                    _buildTitle('Upcoming movies'),
-                    SizedBox(height: 18.h),
-                    const MoiveListWidget(),
-                  ],
-                ),
-              ),
-            );
-          },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 55.h),
+                _buildMainTitle(),
+                SizedBox(height: 35.h),
+                _buildTitle('New movies'),
+                SizedBox(height: 18.h),
+                state.movies != null
+                    ? MoiveListWidget(nowPlayingmovies: state.movies!)
+                    : SizedBox(width: 147.w, height: 160.h),
+                SizedBox(height: 23.h),
+                _buildTitle('Upcoming movies'),
+                SizedBox(height: 18.h),
+                // const MoiveListWidget(),
+              ],
+            ),
+          ),
         ),
       ),
     );

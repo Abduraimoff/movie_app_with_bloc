@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.theme,
           routes: MainNavigation.routes,
           initialRoute: MainNavigation.initialRoute(model.isAuth),
+          onGenerateRoute: MainNavigation.onGenerateRoute,
           title: 'Movie App',
         );
       },

@@ -1,24 +1,36 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
+import 'package:movie_app/data/models/cast.dart';
+import 'package:movie_app/utils/config.dart';
 import 'package:movie_app/utils/export_pack.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CastCardWidget extends StatelessWidget {
-  const CastCardWidget({super.key});
+  final Cast cast;
+
+  const CastCardWidget({super.key, required this.cast});
 
   @override
   Widget build(BuildContext context) {
+    final String _imageUrl = '${Config.imageUrl}/${cast.profilePath}';
+
     return Container(
       height: 60.h,
       width: 60.w,
       margin: EdgeInsets.only(top: 14.h),
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
           width: 2,
           color: Colors.white.withOpacity(0.15),
         ),
-        image: const DecorationImage(
-          image: NetworkImage(
-            'https://www.themoviedb.org/t/p/w138_and_h175_face/cgoy7t5Ve075naBPcewZrc08qGw.jpg',
-          ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.r),
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: _imageUrl,
           fit: BoxFit.cover,
         ),
       ),

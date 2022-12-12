@@ -128,6 +128,6 @@ class _LoginPageState extends State<LoginPage> {
 _navigateToNavPage(BuildContext context) {
   Navigator.pushReplacementNamed(
     context,
-    MainNavigationRouteNames.nav,
+    RouteNames.nav,
   );
 }

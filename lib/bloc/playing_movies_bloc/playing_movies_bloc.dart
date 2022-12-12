@@ -13,30 +13,16 @@ part 'playing_movies_state.dart';
 class PlayingMoviesBloc extends Bloc<PlayingMoviesLoad, PlayingMoviesState> {
   final _moiveService = PlayinMoviesService();
 
-  int _page = 1;
-
-  PlayingMoviesBloc() : super(PlayingMoviesInitial()) {
+  PlayingMoviesBloc() : super(const PlayingMoviesState()) {
     on<PlayingMoviesLoad>(
       (event, emit) async {
         try {
-          var oldMovies = <NowPlayingMovies>[];
-          emit(PlayingMoviesLoading(oldMovies, isFirstFetch: _page == 1));
-          _moiveService.loadNowPlayingMovies(_page).then(
-            (newMovies) {
-              if (newMovies.totalPages != null) {
-                if (_page <= newMovies.totalPages!) {
-                  _page++;
-                  final oldMovies = (state as PlayingMoviesLoading).oldMovies;
-                  oldMovies.addAll(newMovies);
-                  emit(PlayingMoviesSucces(newMovies));
-                }
-              }
-            },
-          );
+          final result = await _moiveService.loadNowPlayingMovies(1);
+          emit(PlayingMoviesState(movies: result));
         } on DioError catch (e) {
           final errorMessage = DioExceptions.fromDioError(e).toString();
           log(errorMessage);
-          emit(PlayingMoviesError());
+          emit(PlayingMoviesState(movies: null, errorMessage: errorMessage));
         }
       },
     );

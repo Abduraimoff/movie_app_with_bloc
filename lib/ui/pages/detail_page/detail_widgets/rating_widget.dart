@@ -2,12 +2,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_app/utils/export_pack.dart';
 
 class RatingWidget extends StatelessWidget {
-  const RatingWidget({super.key});
+  final double votes;
+  const RatingWidget({super.key, required this.votes});
 
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
-      initialRating: 3,
+      initialRating: votes,
       minRating: 1,
       unratedColor: Colors.white,
       itemSize: 14,

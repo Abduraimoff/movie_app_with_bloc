@@ -18,7 +18,7 @@ class UpcomingMovies {
   Map<String, dynamic> toMap() {
     return {
       'page': page,
-      'results': movies.map((x) => x.toJson()).toList(),
+      'results': movies.map((x) => x.toMap()).toList(),
       'total_pages': totalPages,
       'total_results': totalResults,
     };
@@ -27,7 +27,7 @@ class UpcomingMovies {
   factory UpcomingMovies.fromMap(Map<String, dynamic> map) {
     return UpcomingMovies(
       page: map['page']?.toInt() ?? 0,
-      movies: List<Movie>.from(map['results']?.map((x) => Movie.fromJson(x))),
+      movies: List<Movie>.from(map['results']?.map((x) => Movie.fromMap(x))),
       totalPages: map['total_pages']?.toInt() ?? 0,
       totalResults: map['total_results']?.toInt() ?? 0,
     );
