@@ -13,6 +13,8 @@ class CastCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String _imageUrl = '${Config.imageUrl}/${cast.profilePath}';
+    const String _notFoundImg =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQao8O6Q2B0vAVkVUAUKOBqrB7TJ9PiZCtdww&usqp=CAU';
 
     return Container(
       height: 60.h,
@@ -30,6 +32,10 @@ class CastCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
         child: FadeInImage.memoryNetwork(
           placeholder: kTransparentImage,
+          imageErrorBuilder: (context, error, stackTrace) => Image.network(
+            _notFoundImg,
+            fit: BoxFit.cover,
+          ),
           image: _imageUrl,
           fit: BoxFit.cover,
         ),

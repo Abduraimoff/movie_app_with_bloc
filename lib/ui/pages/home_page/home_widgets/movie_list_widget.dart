@@ -1,17 +1,16 @@
-import 'package:movie_app/data/models/now_playing_movies.dart';
 import 'package:movie_app/ui/pages/home_page/home_widgets/movie_card_widget.dart';
 import 'package:movie_app/utils/export_pack.dart';
 
 class MoiveListWidget extends StatelessWidget {
-  final NowPlayingMovies nowPlayingmovies;
+  final dynamic movieList;
 
-  const MoiveListWidget({super.key, required this.nowPlayingmovies});
+  const MoiveListWidget({super.key, required this.movieList});
 
   @override
   Widget build(BuildContext context) {
-    final movies = nowPlayingmovies.movies;
+    final movies = movieList.movies;
     return SizedBox(
-      height: 161.h,
+      height: 201.h,
       child: ListView.separated(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,

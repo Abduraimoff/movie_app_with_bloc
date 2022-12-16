@@ -1,8 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/bloc/casts_bloc/casts_bloc.dart';
-import 'package:movie_app/data/models/movie.dart';
+import 'package:movie_app/bloc/movie_detail_bloc/movie_detail_bloc.dart';
 import 'package:movie_app/utils/config.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -12,22 +11,44 @@ import 'detail_widgets/cast_list_widget.dart';
 import 'detail_widgets/pay_button_widget.dart';
 import 'detail_widgets/rating_widget.dart';
 
-class DetailPage extends StatelessWidget {
-  final Movie movie;
+class DetailPage extends StatefulWidget {
+  final int movieId;
 
   const DetailPage({
     super.key,
-    required this.movie,
+    required this.movieId,
   });
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void didChangeDependencies() {
+    context.read<MovieDetailBloc>().add(MovieDetailEvent(widget.movieId));
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final id = movie.id;
+    final state = context.watch<MovieDetailBloc>().state;
+    final isLoading = state.isLoading;
+    final error = state.errorMessage;
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => CastsBloc()..add(CastsLoadEvent(id)),
-        child: _Body(movie: movie),
-      ),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.noenPrimaryColor,
+                backgroundColor: AppColors.pinkColor,
+                strokeWidth: 3,
+              ),
+            )
+          : (error != null)
+              ? Center(
+                  child: Text(error),
+                )
+              : const _Body(),
     );
   }
 }
@@ -35,14 +56,17 @@ class DetailPage extends StatelessWidget {
 class _Body extends StatelessWidget {
   const _Body({
     Key? key,
-    required this.movie,
   }) : super(key: key);
-
-  final Movie movie;
 
   @override
   Widget build(BuildContext context) {
-    final String _imageUrl = '${Config.imageUrl}/${movie.posterPath}';
+    final state = context.watch<MovieDetailBloc>().state;
+    final movie = state.movie;
+
+    final String _imageUrl =
+        'https://image.tmdb.org/t/p/original/${movie?.backdropPath}';
+    const String _notFoundImg =
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQao8O6Q2B0vAVkVUAUKOBqrB7TJ9PiZCtdww&usqp=CAU';
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -50,6 +74,7 @@ class _Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
+            alignment: Alignment.center,
             children: [
               SizedBox(
                 height: 450.h,
@@ -57,10 +82,13 @@ class _Body extends StatelessWidget {
                 child: FadeInImage.memoryNetwork(
                   fadeInDuration: const Duration(milliseconds: 200),
                   imageErrorBuilder: (context, error, stackTrace) =>
-                      const SizedBox.shrink(),
+                      Image.network(
+                    _notFoundImg,
+                    fit: BoxFit.cover,
+                  ),
                   placeholder: kTransparentImage,
                   image: _imageUrl,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
               const BackButtonWidget(),
@@ -72,13 +100,10 @@ class _Body extends StatelessWidget {
               width: 285.w,
               child: Column(
                 children: [
-                  _TitleWidget(title: movie.title),
-                  _SubtitleWidget(
-                    date: movie.releaseDate,
-                    lan: movie.originalLanguage,
-                  ),
-                  RatingWidget(votes: double.parse(movie.voteAverage)),
-                  _DescriptionWidget(movie.overview),
+                  _TitleWidget(title: movie?.title ?? ''),
+                  _SubtitleWidget(text: movie?.tagline ?? ''),
+                  RatingWidget(votes: double.parse(movie?.voteAverage ?? '0')),
+                  _DescriptionWidget(movie?.overview ?? ''),
                 ],
               ),
             ),
@@ -96,7 +121,7 @@ class _Body extends StatelessWidget {
               ),
             ),
           ),
-          const CastListWidget(),
+          CastListWidget(casts: movie?.castList ?? []),
         ],
       ),
     );
@@ -178,13 +203,11 @@ class _TitleWidget extends StatelessWidget {
 }
 
 class _SubtitleWidget extends StatelessWidget {
-  final String date;
-  final String lan;
+  final String text;
 
   const _SubtitleWidget({
     Key? key,
-    required this.date,
-    required this.lan,
+    required this.text,
   }) : super(key: key);
 
   @override
@@ -192,7 +215,7 @@ class _SubtitleWidget extends StatelessWidget {
     return Column(
       children: [
         Text(
-          '$date  ($lan)',
+          text,
           style: TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 13.sp,

@@ -16,7 +16,7 @@ class CastService {
       final List<Cast> casts = body.map((c) => Cast.fromMap(c)).toList();
 
       return casts;
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       rethrow;
     }
   }

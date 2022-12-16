@@ -1,6 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/bloc/playing_movies_bloc/playing_movies_bloc.dart';
+import 'package:movie_app/bloc/movies_bloc/movies_bloc.dart';
 import 'package:movie_app/ui/pages/home_page/home_widgets/movie_list_widget.dart';
 
 import '../../../utils/export_pack.dart';
@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final _screenHeight = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
-    final bloc = context.watch<PlayingMoviesBloc>();
+    final bloc = context.watch<MoviesBloc>();
     final state = bloc.state;
     return Scaffold(
       extendBody: true,
@@ -27,21 +27,31 @@ class HomePage extends StatelessWidget {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 55.h),
                 _buildMainTitle(),
                 SizedBox(height: 35.h),
-                _buildTitle('New movies'),
+                _buildTitle('Now playing movies'),
                 SizedBox(height: 18.h),
-                state.movies != null
-                    ? MoiveListWidget(nowPlayingmovies: state.movies!)
-                    : SizedBox(width: 147.w, height: 160.h),
+                state.nowPlayingmovies != null
+                    ? MoiveListWidget(movieList: state.nowPlayingmovies!)
+                    : SizedBox(width: 147.w, height: 201.h),
                 SizedBox(height: 23.h),
                 _buildTitle('Upcoming movies'),
                 SizedBox(height: 18.h),
-                // const MoiveListWidget(),
+                state.upcomingMovies != null
+                    ? MoiveListWidget(movieList: state.upcomingMovies)
+                    : SizedBox(width: 147.w, height: 201.h),
+                SizedBox(height: 23.h),
+                _buildTitle('Top rated movies'),
+                SizedBox(height: 18.h),
+                state.popularMovies != null
+                    ? MoiveListWidget(movieList: state.popularMovies)
+                    : SizedBox(width: 147.w, height: 201.h),
+                SizedBox(height: 23.h),
               ],
             ),
           ),

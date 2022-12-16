@@ -8,6 +8,7 @@ import 'cast.dart';
 class MovieDetail {
   final int id;
   final String title;
+  final String tagline;
   final String backdropPath;
   final String budget;
   final String homePage;
@@ -17,6 +18,7 @@ class MovieDetail {
   final String runtime;
   final String voteAverage;
   final String voteCount;
+  final String originalLanguage;
 
   String? trailerId;
   List<Cast>? castList;
@@ -24,6 +26,7 @@ class MovieDetail {
   MovieDetail({
     required this.id,
     required this.title,
+    required this.tagline,
     required this.backdropPath,
     required this.budget,
     required this.homePage,
@@ -33,6 +36,7 @@ class MovieDetail {
     required this.runtime,
     required this.voteAverage,
     required this.voteCount,
+    required this.originalLanguage,
     this.trailerId,
     this.castList,
   });
@@ -43,6 +47,7 @@ class MovieDetail {
     return MovieDetail(
       id: map['id']?.toInt() ?? 0,
       title: map['title'] ?? '',
+      tagline: map['tagline'] ?? '',
       backdropPath: map['backdrop_path'] ?? '',
       budget: map['budget'].toString(),
       homePage: map['home_page'] ?? '',
@@ -53,6 +58,7 @@ class MovieDetail {
       voteAverage: map['vote_average'].toString(),
       voteCount: map['vote_count'].toString(),
       trailerId: map['trailerId'],
+      originalLanguage: map['original_language'],
     );
   }
 

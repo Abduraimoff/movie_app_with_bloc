@@ -5,12 +5,9 @@ class PlayButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0.h,
-      right: 21.w,
-      child: GestureDetector(
-        onTap: () {},
-        child: Container(
+    return Stack(
+      children: [
+        Container(
           width: 60.w,
           height: 60.h,
           padding: const EdgeInsets.all(3),
@@ -46,7 +43,23 @@ class PlayButtonWidget extends StatelessWidget {
             child: const Icon(Icons.play_arrow, color: Colors.white, size: 30),
           ),
         ),
-      ),
+        Container(
+          width: 60.w,
+          height: 60.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.r),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(30.r),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30.r),
+              onTap: () {},
+              child: Ink(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

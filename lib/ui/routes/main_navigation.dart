@@ -1,4 +1,6 @@
-import 'package:movie_app/data/models/movie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/bloc/movie_detail_bloc/movie_detail_bloc.dart';
+import 'package:movie_app/data/models/movie_detail.dart';
 import 'package:movie_app/ui/pages/detail_page/detail_page.dart';
 import 'package:movie_app/ui/screen_factory/screen_factory.dart';
 import 'package:movie_app/utils/export_pack.dart';
@@ -25,9 +27,12 @@ class MainNavigation {
   static Route<Object> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.detail:
-        final movie = settings.arguments as Movie;
+        final movieId = settings.arguments as int;
         return MaterialPageRoute(
-          builder: (context) => DetailPage(movie: movie),
+          builder: (context) => BlocProvider(
+            create: (context) => MovieDetailBloc(),
+            child: DetailPage(movieId: movieId),
+          ),
         );
       default:
         return MaterialPageRoute(
