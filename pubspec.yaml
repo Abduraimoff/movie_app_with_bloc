@@ -23,6 +23,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   smooth_page_indicator: ^1.0.0+2
   rive: ^0.9.1
+  url_launcher: any
 
 dev_dependencies:
   flutter_test:

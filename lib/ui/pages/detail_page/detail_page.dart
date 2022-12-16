@@ -92,7 +92,7 @@ class _Body extends StatelessWidget {
                 ),
               ),
               const BackButtonWidget(),
-              const PlayButtonWidget(),
+              PlayButtonWidget(movie?.trailerId),
             ],
           ),
           Center(

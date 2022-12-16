@@ -1,7 +1,10 @@
 import 'package:movie_app/utils/export_pack.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayButtonWidget extends StatelessWidget {
-  const PlayButtonWidget({super.key});
+  final String? youtubeId;
+  const PlayButtonWidget(this.youtubeId, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,12 @@ class PlayButtonWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(30.r),
             child: InkWell(
               borderRadius: BorderRadius.circular(30.r),
-              onTap: () {},
+              onTap: () async {
+                final youtubeUrl = 'https://www.youtube.com/embed/$youtubeId';
+                if (await canLaunchUrl(Uri.parse(youtubeUrl))) {
+                  await launchUrlString(youtubeUrl);
+                }
+              },
               child: Ink(),
             ),
           ),
