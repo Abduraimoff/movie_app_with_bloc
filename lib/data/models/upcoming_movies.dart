@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'movie.dart';
 
 class UpcomingMovies {
@@ -32,9 +30,4 @@ class UpcomingMovies {
       totalResults: map['total_results']?.toInt() ?? 0,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory UpcomingMovies.fromJson(String source) =>
-      UpcomingMovies.fromMap(json.decode(source));
 }

@@ -1,7 +1,5 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:movie_app/data/models/popular_movies.dart';
 import 'package:movie_app/utils/config.dart';
@@ -16,7 +14,6 @@ class PopularMoviesService {
 
     try {
       final response = await _dio.get(_url);
-      log(response.data.toString());
 
       final moives = PopularMovies.fromMap(response.data);
 

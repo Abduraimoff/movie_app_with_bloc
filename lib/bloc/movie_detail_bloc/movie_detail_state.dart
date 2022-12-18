@@ -2,6 +2,7 @@ part of 'movie_detail_bloc.dart';
 
 class MovieDetailState extends Equatable {
   final MovieDetail? movie;
+  final UpcomingMovies? similarMovies;
   final String? errorMessage;
 
   bool isLoading;
@@ -10,6 +11,7 @@ class MovieDetailState extends Equatable {
     this.movie,
     this.errorMessage,
     this.isLoading = false,
+    this.similarMovies,
   });
 
   @override

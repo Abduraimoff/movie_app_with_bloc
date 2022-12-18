@@ -2,7 +2,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_detail_bloc/movie_detail_bloc.dart';
-import 'package:movie_app/utils/config.dart';
+import 'package:movie_app/ui/pages/home_page/home_widgets/movie_list_widget.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../../../utils/export_pack.dart';
@@ -62,6 +62,7 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<MovieDetailBloc>().state;
     final movie = state.movie;
+    final similarMovies = state.similarMovies;
 
     final String _imageUrl =
         'https://image.tmdb.org/t/p/original/${movie?.backdropPath}';
@@ -122,6 +123,21 @@ class _Body extends StatelessWidget {
             ),
           ),
           CastListWidget(casts: movie?.castList ?? []),
+          Padding(
+            padding: EdgeInsets.only(left: 21.w, top: 15.h),
+            child: Text(
+              'Similar movies',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 17.sp,
+                color: Colors.white,
+                height: 23.15 / 17.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          MoiveListWidget(movieList: similarMovies),
+          SizedBox(height: 20.h),
         ],
       ),
     );

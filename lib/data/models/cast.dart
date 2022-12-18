@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Cast {
   final bool adult;
   final int gender;

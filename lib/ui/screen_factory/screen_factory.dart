@@ -6,6 +6,7 @@ import 'package:movie_app/ui/pages/home_page/home_page.dart';
 import 'package:movie_app/ui/pages/intro_page/intro_page.dart';
 import 'package:movie_app/ui/pages/login_page/login_page.dart';
 import 'package:movie_app/ui/pages/nav_page/nav_page.dart';
+import 'package:movie_app/ui/pages/person_page/person_page.dart';
 import 'package:movie_app/utils/export_pack.dart';
 
 class ScreenFactory {
