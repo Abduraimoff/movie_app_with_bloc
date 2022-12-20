@@ -1,9 +1,9 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'package:movie_app/data/data_provider/session_data_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:movie_app/ui/screen_factory/screen_factory.dart';
-import 'package:movie_app/ui/widgets/bottom_icons_list.dart';
 import 'package:movie_app/utils/export_pack.dart';
+import 'package:rive/rive.dart';
 
 class NavPage extends StatefulWidget {
   const NavPage({super.key});
@@ -13,102 +13,132 @@ class NavPage extends StatefulWidget {
 }
 
 class _NavPageState extends State<NavPage> {
+  List<SMIInput<bool>?> inputs = [];
+  List<Artboard> artboards = [];
+
   final List<Widget> _screens = [
     ScreenFactory.makeHomePage(),
     ScreenFactory.makeLoginPage(),
     ScreenFactory.makeIntroPage(),
     const Center(child: Text('analysis')),
+    const Center(child: Text('analysis')),
   ];
 
   int _selectedIndex = 0;
+
+  final List<String> _assetPaths = [
+    'assets/rive/home.riv',
+    'assets/rive/user.riv',
+    'assets/rive/chat.riv',
+    'assets/rive/star.riv',
+    'assets/rive/bell.riv',
+  ];
+
+  Future<dynamic> _initArtboard() async {
+    for (var path in _assetPaths) {
+      final data = await rootBundle.load(path);
+
+      final file = RiveFile.import(data);
+      final artboard = file.mainArtboard;
+
+      SMIInput<bool>? input;
+
+      final controller =
+          StateMachineController.fromArtboard(artboard, 'State Machine 1');
+
+      if (controller != null) {
+        artboard.addController(controller);
+        input = controller.findInput('active');
+        input?.value = true;
+      }
+      inputs.add(input);
+      artboards.add(artboard);
+    }
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    await _initArtboard();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+      resizeToAvoidBottomInset: true,
       body: IndexedStack(
         index: _selectedIndex,
         children: _screens,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: const CustomFloatingActionButton(),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 5,
-        color: Colors.white.withOpacity(0.12),
-        child: SizedBox(
-          height: 60.h,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(
-              BottomIconsList.icons.length,
-              (index) {
-                if (index == 2) {
-                  return SizedBox(width: 30.w);
-                }
-                return IconButton(
-                  onPressed: () {
-                    setState(() {
-                      if (index == 4) {
-                        _selectedIndex = index - 1;
-                      } else if (index == 3) {
-                        _selectedIndex = index - 1;
-                      } else {
-                        _selectedIndex = index;
-                      }
-                    });
-                  },
-                  icon: Icon(
-                    BottomIconsList.icons[index],
-                    size: 30,
-                    color: _selectedIndex == index ? Colors.white : Colors.grey,
-                  ),
-                );
-              },
-            ),
+      bottomNavigationBar: Container(
+        width: double.infinity,
+        height: 60.h,
+        decoration: BoxDecoration(
+          color: AppColors.noenSecondaryColor.withOpacity(0.2),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
           ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: artboards.map<Widget>(
+            (artboard) {
+              final index = artboards.indexOf(artboard);
+              return BottomAppBarItem(
+                artboard: artboard,
+                currentIndex: _selectedIndex,
+                tabIndex: index,
+                input: inputs[index],
+                onPress: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+              );
+            },
+          ).toList(),
         ),
       ),
     );
   }
 }
 
-class CustomFloatingActionButton extends StatelessWidget {
-  const CustomFloatingActionButton({
-    Key? key,
-  }) : super(key: key);
+class BottomAppBarItem extends StatelessWidget {
+  final Artboard? artboard;
+  final VoidCallback onPress;
+  final int currentIndex;
+  final int tabIndex;
+  final SMIInput<bool>? input;
+
+  const BottomAppBarItem({
+    super.key,
+    required this.artboard,
+    required this.onPress,
+    required this.currentIndex,
+    required this.tabIndex,
+    this.input,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final sessionData = SessionDataProvider();
+    if (input != null) {
+      input!.value = currentIndex == tabIndex;
+    }
 
-    return GestureDetector(
-      onTap: () {
-        sessionData.deleteSessionId();
-      },
-      child: Container(
-        width: 60.w,
-        height: 60.h,
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.r),
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.pinkColor,
-              AppColors.noenPrimaryColor,
-            ],
-          ),
-        ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.r),
-            backgroundBlendMode: BlendMode.hardLight,
-            color: AppColors.bgColor.withOpacity(1),
-          ),
-          child: const Icon(Icons.add, color: Colors.white, size: 30),
-        ),
+    return SizedBox(
+      width: 40.w,
+      height: 40.h,
+      child: GestureDetector(
+        onTap: onPress,
+        child: artboard == null
+            ? const SizedBox()
+            : Rive(
+                artboard: artboard!,
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
